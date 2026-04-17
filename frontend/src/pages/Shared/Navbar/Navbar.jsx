@@ -36,8 +36,8 @@ const Navbar = () => {
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to="/intallation" className={navLinkStyle}>
-                      Installation
+                    <NavLink to="/coverage" className={navLinkStyle}>
+                      Coverage
                     </NavLink>
                   </li>
                 </ul>
@@ -61,8 +61,8 @@ const Navbar = () => {
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/intallation" className={navLinkStyle}>
-                    Installation
+                  <NavLink to="/coverage" className={navLinkStyle}>
+                    Coverage
                   </NavLink>
                 </li>
               </ul>
