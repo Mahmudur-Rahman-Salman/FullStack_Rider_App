@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router";
+import Logo from "../../../components/Logo/Logo";
+import { IoLogIn } from "react-icons/io5";
 
 const Navbar = () => {
   const navLinkStyle = ({ isActive }) =>
@@ -42,9 +44,7 @@ const Navbar = () => {
               </div>
 
               {/* Logo */}
-              <Link to="/" className="text-xl font-bold ml-2">
-                <span className="text-amber-500">Hero</span> IO
-              </Link>
+              <Logo></Logo>
             </div>
 
             {/* CENTER: Desktop Menu */}
@@ -70,15 +70,13 @@ const Navbar = () => {
 
             {/* RIGHT: GitHub Button */}
             <div className="navbar-end">
-              {/* <a
-                href="https://github.com/Mahmudur-Rahman-Salman"
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-primary bg-[#7E45EA] btn-sm"
+              <Link
+                to="/"
+                className="btn btn-primary bg-[#7E45EA] btn-sm flex items-center gap-2 justify-center"
               >
-                <FaGithub className="rounded text-black" />
-                <span>Contribute</span>
-              </a> */}
+                <IoLogIn className="rounded  text-lg" />
+                <span className="text-lg">Signup</span>
+              </Link>
             </div>
           </div>
         </div>

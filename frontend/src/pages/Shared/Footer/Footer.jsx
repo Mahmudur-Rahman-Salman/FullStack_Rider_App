@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
-import { FaFacebook, FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
-
+import { FaFacebook, FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import Logo from "../../../components/Logo/Logo";
 
 const Footer = () => {
   return (
@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {/* Brand */}
             <div>
-              <h2 className="text-xl font-bold text-white">Hero IO</h2>
+              <Logo></Logo>
               <p className="mt-3 text-sm text-gray-400">
                 Discover, explore, and install the best apps in one place.
                 Simple, fast, and user-focused.

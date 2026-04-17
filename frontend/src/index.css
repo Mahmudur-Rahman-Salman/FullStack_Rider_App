@@ -1,7 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
 
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark --prefersdark,
+    emerald;
+}
 
 body {
   font-family: "Oswald", sans-serif;
@@ -10,4 +15,5 @@ body {
 }
 :root {
   background-color: white;
+  color: black;
 }
