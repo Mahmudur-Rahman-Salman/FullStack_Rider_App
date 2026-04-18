@@ -6,7 +6,7 @@ import { useLoaderData } from "react-router";
 const Coverage = () => {
   const position = [23.685, 90.3563];
   const serviceCenters = useLoaderData();
-   const mapRef = useRef(null);
+  const mapRef = useRef(null);
   console.log(serviceCenters);
 
   const handleSearch = (e) => {
