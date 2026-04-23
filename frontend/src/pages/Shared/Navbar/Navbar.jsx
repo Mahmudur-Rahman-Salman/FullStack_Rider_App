@@ -71,11 +71,11 @@ const Navbar = () => {
             {/* RIGHT: GitHub Button */}
             <div className="navbar-end">
               <Link
-                to="/"
+                to="/register"
                 className="btn btn-primary bg-[#7E45EA] btn-sm flex items-center gap-2 justify-center"
               >
                 <IoLogIn className="rounded  text-lg" />
-                <span className="text-lg">Signup</span>
+                <span className="text-lg">Register</span>
               </Link>
             </div>
           </div>

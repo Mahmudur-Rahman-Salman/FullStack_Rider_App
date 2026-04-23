@@ -27,13 +27,13 @@ const Coverage = () => {
 
   return (
     <div className="min-h-screen max-w-7xl mx-auto">
-      <h2 className="text-5xl">We are available in 64 districts</h2>
+      <h2 className="text-5xl m-10">We are available in 64 districts</h2>
       <div>
         {/* search  */}
         <form onSubmit={handleSearch}>
-          <label className="input">
+          <label className="input bg-gray-100 rounded-lg flex items-center gap-2 px-4 py-2 w-full max-w-md">
             <svg
-              className="h-[1em] opacity-50"
+              className="h-[1em]"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
             >
@@ -50,20 +50,22 @@ const Coverage = () => {
             </svg>
             <input
               type="search"
-              className="grow"
+              className="grow "
               name="location"
               placeholder="Search"
             />
           </label>
+
+         
         </form>
       </div>
 
-      <div className="border w-full h-[800px]">
+      <div className="border w-full h-200 mt-10">
         <MapContainer
           center={position}
           zoom={8}
           scrollWheelZoom={false}
-          className="h-[800px]"
+          className="h-200"
           ref={mapRef}
         >
           <TileLayer
