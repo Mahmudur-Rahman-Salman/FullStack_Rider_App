@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
-import { updateProfile } from "firebase/auth";
+
 import SocialLogin from "../SocialLogin/SocialLogin";
+import axios from "axios";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,21 +17,48 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
-  const { registerUser } = useAuth();
+  const { registerUser, updateUserProfile } = useAuth();
 
   const onSubmit = async (data) => {
     setLoading(true);
+
     try {
+      // 🔥 1. get file
+      const profileImg = data.photo[0];
+
+      if (!profileImg) {
+        throw new Error("No image selected");
+      }
+
+      // 🔥 2. create user first
       const result = await registerUser(data.email, data.password);
+
+      // 🔥 3. prepare formData
+      const formData = new FormData();
+      formData.append("image", profileImg);
+
+      // 🔥 4. upload to imgbb
+      const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
+
+      const res = await axios.post(image_API_URL, formData);
+
+      const imageUrl = res.data.data.url;
+
+      console.log("After Uploaded Image URL:", imageUrl);
+
+      // 🔥 5. update Firebase profile
       if (result?.user) {
-        await updateProfile(result.user, {
+        await updateUserProfile({
           displayName: data.name,
+          photoURL: imageUrl,
         });
       }
-      console.log("Registered User: ", result?.user);
+
+      console.log("Registered User:", result.user);
+
       reset();
     } catch (error) {
-      console.error("Registration Error: ", error);
+      console.error("Registration Error:", error);
     } finally {
       setLoading(false);
     }
@@ -42,6 +70,24 @@ const Register = () => {
         <p className="text-center text-gray-500 mb-6">Sign up to get started</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Photo URL */}
+          <div>
+            <input
+              type="file"
+              {...register("photo", {
+                required: "Photo URL is required",
+              })}
+              className="file-input file-input-bordered w-full rounded-xl bg-gray-100"
+              placeholder="Profile Photo URL"
+            />
+
+            {errors.photo && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.photo.message}
+              </p>
+            )}
+          </div>
+
           {/* Name */}
           <div>
             <input

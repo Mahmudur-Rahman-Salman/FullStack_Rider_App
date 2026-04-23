@@ -11,6 +11,16 @@ const Navbar = () => {
     isActive
       ? "text-[#7E45EA] font-semibold border-b-2 border-[#7E45EA]"
       : "hover:text-[#7E45EA]";
+
+  const handleLogout = () => {
+    logOut()
+      .then(() => {
+        // Logout successful, you can perform any additional actions here if needed
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+      });
+  };
   return (
     <>
       <header className=" text-black shadow-sm">
@@ -69,11 +79,11 @@ const Navbar = () => {
                 </li>
               </ul>
             </div>
-          
+
             <div className="navbar-end">
               {user ? (
                 <button
-                  onClick={logOut}
+                  onClick={handleLogout}
                   className="btn btn-primary bg-[#7E45EA] btn-sm flex items-center gap-2 justify-center"
                 >
                   <IoLogIn className="rounded  text-lg" />
@@ -89,6 +99,14 @@ const Navbar = () => {
                 </Link>
               )}
             </div>
+
+             <Link
+                  to="/beARider"
+                  className="btn btn-primary bg-[rgb(223,109,8)] btn-sm flex items-center gap-2 justify-center ml-4 outline-none border-none"
+                >
+                  <IoLogIn className="rounded  text-lg" />
+                  <span className="text-lg">Be a Rider</span>
+                </Link> 
           </div>
         </div>
       </header>

@@ -4,7 +4,7 @@ import Logo from "../components/Logo/Logo";
 
 const AuthLayout = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 m-20">
       <div className="w-full max-w-md">
         {/* Logo / Header */}
         <div className="text-center mb-6">
