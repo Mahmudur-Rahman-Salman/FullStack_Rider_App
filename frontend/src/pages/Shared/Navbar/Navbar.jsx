@@ -2,8 +2,11 @@ import React from "react";
 import { Link, NavLink } from "react-router";
 import Logo from "../../../components/Logo/Logo";
 import { IoLogIn } from "react-icons/io5";
+import useAuth from "./../../../hooks/useAuth";
 
 const Navbar = () => {
+  const { user, logOut } = useAuth();
+
   const navLinkStyle = ({ isActive }) =>
     isActive
       ? "text-[#7E45EA] font-semibold border-b-2 border-[#7E45EA]"
@@ -46,7 +49,6 @@ const Navbar = () => {
               {/* Logo */}
               <Logo></Logo>
             </div>
-
             {/* CENTER: Desktop Menu */}
             <div className="navbar-center hidden lg:flex">
               <ul className="menu menu-horizontal gap-6 font-medium">
@@ -67,16 +69,25 @@ const Navbar = () => {
                 </li>
               </ul>
             </div>
-
-            {/* RIGHT: GitHub Button */}
+          
             <div className="navbar-end">
-              <Link
-                to="/register"
-                className="btn btn-primary bg-[#7E45EA] btn-sm flex items-center gap-2 justify-center"
-              >
-                <IoLogIn className="rounded  text-lg" />
-                <span className="text-lg">Register</span>
-              </Link>
+              {user ? (
+                <button
+                  onClick={logOut}
+                  className="btn btn-primary bg-[#7E45EA] btn-sm flex items-center gap-2 justify-center"
+                >
+                  <IoLogIn className="rounded  text-lg" />
+                  <span className="text-lg">Log Out</span>
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="btn btn-primary bg-[#7E45EA] btn-sm flex items-center gap-2 justify-center"
+                >
+                  <IoLogIn className="rounded  text-lg" />
+                  <span className="text-lg">Sign In</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>

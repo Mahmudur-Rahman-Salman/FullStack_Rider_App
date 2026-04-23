@@ -1,14 +1,35 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
+import useAuth from "../../../hooks/useAuth";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data); // placeholder
+  const { signInUser } = useAuth();
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+    setAuthError("");
+
+    try {
+      const result = await signInUser(data.email, data.password);
+      console.log("Logged in user:", result?.user);
+    } catch (error) {
+      console.error("Error logging in user:", error);
+      setAuthError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div>
@@ -18,19 +39,30 @@ const Login = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Email */}
-          <input
-            type="email"
-            placeholder="Email"
-            {...register("email")}
-            className="w-full border px-4 py-3 rounded-xl"
-          />
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              {...register("email", {
+                required: "Email is required",
+              })}
+              className="w-full border px-4 py-3 rounded-xl"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
           {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              {...register("password")}
+              {...register("password", {
+                required: "Password is required",
+              })}
               className="w-full border px-4 py-3 rounded-xl pr-16"
             />
             <button
@@ -40,12 +72,30 @@ const Login = () => {
             >
               {showPassword ? "Hide" : "Show"}
             </button>
+
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
-          <button className="w-full bg-orange-500 text-white py-3 rounded-xl">
-            Login
+          {/* Firebase Error */}
+          {authError && (
+            <p className="text-red-500 text-sm text-center">{authError}</p>
+          )}
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-orange-500 text-white py-3 rounded-xl disabled:opacity-60"
+          >
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <SocialLogin></SocialLogin>
 
         <p className="text-center mt-5 text-sm">
           Don't have an account?{" "}
