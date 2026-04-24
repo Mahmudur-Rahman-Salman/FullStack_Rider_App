@@ -101,7 +101,7 @@ const Navbar = () => {
             </div>
 
              <Link
-                  to="/beARider"
+                  to="/rider"
                   className="btn btn-primary bg-[rgb(223,109,8)] btn-sm flex items-center gap-2 justify-center ml-4 outline-none border-none"
                 >
                   <IoLogIn className="rounded  text-lg" />

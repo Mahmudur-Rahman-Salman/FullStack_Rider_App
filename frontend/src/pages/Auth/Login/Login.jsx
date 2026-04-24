@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import SocialLogin from "../SocialLogin/SocialLogin";
 
@@ -8,6 +8,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
+  const location = useLocation(); 
+  const navigate = useNavigate();
+
 
   const {
     register,
@@ -24,8 +27,9 @@ const Login = () => {
     try {
       const result = await signInUser(data.email, data.password);
       console.log("Logged in user:", result?.user);
+      navigate(location?.state || "/");
     } catch (error) {
-      console.error("Error logging in user:", error);
+      // console.error("Error logging in user:", error);
       setAuthError(error.message);
     } finally {
       setLoading(false);
@@ -99,7 +103,8 @@ const Login = () => {
 
         <p className="text-center mt-5 text-sm">
           Don't have an account?{" "}
-          <Link to="/register" className="text-orange-500 font-semibold">
+          <Link to="/register" 
+          state={location?.state}className="text-orange-500 font-semibold">
             Sign Up
           </Link>
         </p>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 
@@ -9,6 +9,8 @@ import axios from "axios";
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -55,6 +57,7 @@ const Register = () => {
       }
 
       console.log("Registered User:", result.user);
+      navigate(location?.state || "/");
 
       reset();
     } catch (error) {
@@ -173,7 +176,11 @@ const Register = () => {
 
         <p className="text-center mt-5 text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="text-orange-500 font-semibold">
+          <Link
+            to="/login"
+            state={location?.state}
+            className="text-orange-500 font-semibold"
+          >
             Login
           </Link>
         </p>

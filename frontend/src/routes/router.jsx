@@ -3,8 +3,11 @@ import RootLayouts from "../layouts/RootLayouts";
 import Home from "../pages/Home/Home";
 import Coverage from "../pages/Coverage/Coverage";
 import AuthLayout from "../layouts/AuthLayout";
-import Login from './../pages/Auth/Login/Login';
-import Register from './../pages/Auth/Register/Register';
+import Login from "./../pages/Auth/Login/Login";
+import Register from "./../pages/Auth/Register/Register";
+
+import PrivateRoute from "./PrivateRoute";
+import Rider from "../pages/Auth/Rider";
 
 export const router = createBrowserRouter([
   {
@@ -21,19 +24,27 @@ export const router = createBrowserRouter([
         loader: () => fetch("/serviceCenters.json"),
       },
       {
+        path: "rider",
+        element: (
+          <PrivateRoute>
+            <Rider></Rider>
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "/",
-        Component : AuthLayout, 
+        Component: AuthLayout,
         children: [
           {
-            path: "login", 
-            Component: Login
-          }, 
+            path: "login",
+            Component: Login,
+          },
           {
-            path: "register", 
-            Component: Register
-          }
-        ]
-      }
+            path: "register",
+            Component: Register,
+          },
+        ],
+      },
     ],
   },
 ]);
