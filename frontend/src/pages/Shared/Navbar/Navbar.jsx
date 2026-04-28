@@ -53,6 +53,11 @@ const Navbar = () => {
                       Coverage
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink to="/sendParcel" className={navLinkStyle}>
+                      Send Parcel
+                    </NavLink>
+                  </li>
                 </ul>
               </div>
 
@@ -75,6 +80,11 @@ const Navbar = () => {
                 <li>
                   <NavLink to="/coverage" className={navLinkStyle}>
                     Coverage
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/sendParcel" className={navLinkStyle}>
+                    Send Parcel
                   </NavLink>
                 </li>
               </ul>
@@ -100,13 +110,13 @@ const Navbar = () => {
               )}
             </div>
 
-             <Link
-                  to="/rider"
-                  className="btn btn-primary bg-[rgb(223,109,8)] btn-sm flex items-center gap-2 justify-center ml-4 outline-none border-none"
-                >
-                  <IoLogIn className="rounded  text-lg" />
-                  <span className="text-lg">Be a Rider</span>
-                </Link> 
+            <Link
+              to="/rider"
+              className="btn btn-primary bg-[rgb(223,109,8)] btn-sm flex items-center gap-2 justify-center ml-4 outline-none border-none"
+            >
+              <IoLogIn className="rounded  text-lg" />
+              <span className="text-lg">Be a Rider</span>
+            </Link>
           </div>
         </div>
       </header>
