@@ -58,6 +58,18 @@ const Navbar = () => {
                       Send Parcel
                     </NavLink>
                   </li>
+                  {user && (
+                    <>
+                      <li>
+                        <NavLink
+                          to="/dashboard/my-parcels"
+                          className={navLinkStyle}
+                        >
+                          My Parcels
+                        </NavLink>
+                      </li>
+                    </>
+                  )}
                 </ul>
               </div>
 
@@ -87,6 +99,19 @@ const Navbar = () => {
                     Send Parcel
                   </NavLink>
                 </li>
+
+                {user && (
+                  <>
+                    <li>
+                      <NavLink
+                        to="/dashboard/my-parcels"
+                        className={navLinkStyle}
+                      >
+                        My Parcels
+                      </NavLink>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
 
