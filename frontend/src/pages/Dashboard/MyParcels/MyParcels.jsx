@@ -76,12 +76,14 @@ const MyParcels = () => {
                   {parcel.paymentStatus === "paid" ? (
                     <span className="text-green-400">Paid</span>
                   ) : (
-                    <button
-                      // onClick={() => handlePayment(parcel)}
-                      className="btn btn-sm w-full btn-accent text-black"
-                    >
-                      Pay
-                    </button>
+                    <Link to={`/dashboard/payment/${parcel._id}`}>
+                      <button
+                        // onClick={() => handlePayment(parcel)}
+                        className="btn btn-sm w-full btn-accent text-black"
+                      >
+                        Pay
+                      </button>
+                    </Link>
                   )}
                 </td>
                 <td>{parcel.deliveryStatus}</td>
