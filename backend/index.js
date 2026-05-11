@@ -74,34 +74,35 @@ async function run() {
       res.send(result);
     });
 
-    // payment related apis
-    // app.post("/payment-checkout-session", async (req, res) => {
-    //   const paymentInfo = req.body;
-    //   const amount = parseInt(paymentInfo.cost) * 100;
-    //   const session = await stripe.checkout.sessions.create({
-    //     line_items: [
-    //       {
-    //         price_data: {
-    //           currency: "usd",
-    //           unit_amount: amount,
-    //           product_data: {
-    //             name: `Please pay for: ${paymentInfo.parcelName}`,
-    //           },
-    //         },
-    //         quantity: 1,
-    //       },
-    //     ],
-    //     mode: "payment",
-    //     metadata: {
-    //       parcelId: paymentInfo.parcelId,
-    //     },
-    //     customer_email: paymentInfo.senderEmail,
-    //     success_url: `${process.env.SITE_DOMAIN}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-    //     cancel_url: `${process.env.SITE_DOMAIN}/dashboard/payment-cancelled`,
-    //   });
 
-    //   res.send({ url: session.url });
-    // });
+    // payment api
+    app.post("/payment-checkout-session", async (req, res) => {
+      const paymentInfo = req.body;
+      const amount = parseInt(paymentInfo.cost) * 100;
+      const session = await stripe.checkout.sessions.create({
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              unit_amount: amount,
+              product_data: {
+                name: `Please pay for: ${paymentInfo.parcelName}`,
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        metadata: {
+          parcelId: paymentInfo.parcelId,
+        },
+        customer_email: paymentInfo.senderEmail,
+        success_url: `${process.env.SITE_DOMAIN}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.SITE_DOMAIN}/dashboard/payment-cancelled`,
+      });
+
+      res.send({ url: session.url });
+    });
 
     app.post("/create-checkout-session", async (req, res) => {
       const paymentInfo = req.body;

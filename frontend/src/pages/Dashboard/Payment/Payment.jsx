@@ -28,7 +28,7 @@ const Payment = () => {
     // console.log("payment info", parcel);
     console.log("payment response", res.data);
 
-    // window.location.href = res.data.url;
+    window.location.href = res.data.url;
   };
 
   if (isLoading) {
