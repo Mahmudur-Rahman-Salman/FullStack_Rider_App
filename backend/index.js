@@ -2,12 +2,24 @@
 // import cors from 'cors'
 require("dotenv").config(); // ✅ must be first, loads your .env file
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const stripe = require("stripe")(process.env.STRIPE_SECRET); // ✅ no quotes = real variable
+const stripe = require("stripe")(
+  process.env.STRIPE_SECRET, // ✅ now available from .env
+);
+
 const express = require("express");
 const cors = require("cors");
 const app = express();
 
 const port = process.env.PORT || 3000;
+
+const crypto = require("crypto");
+
+function generateTrackingId() {
+  const prefix = "PRCL";
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const random = crypto.randomBytes(3).toString("hex").toUpperCase();
+  return `${prefix}-${date}-${random}`;
+}
 
 // middleware
 app.use(express.json());
@@ -33,6 +45,7 @@ async function run() {
 
     const db = client.db("fullStack_Rider_App");
     const parcelCollection = db.collection("parcels");
+    const paymentCollection = db.collection("payments");
 
     //parcel api
     app.get("/parcels", async (req, res) => {
@@ -74,7 +87,6 @@ async function run() {
       res.send(result);
     });
 
-
     // payment api
     app.post("/payment-checkout-session", async (req, res) => {
       const paymentInfo = req.body;
@@ -95,44 +107,72 @@ async function run() {
         mode: "payment",
         metadata: {
           parcelId: paymentInfo.parcelId,
+          parcelName: paymentInfo.parcelName,
         },
         customer_email: paymentInfo.senderEmail,
         success_url: `${process.env.SITE_DOMAIN}/dashboard/payment-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.SITE_DOMAIN}/dashboard/payment-cancelled`,
       });
 
+      console.log("session id: ", session);
       res.send({ url: session.url });
     });
 
-    app.post("/create-checkout-session", async (req, res) => {
-      const paymentInfo = req.body;
-      const amount = parseInt(paymentInfo.cost) * 100;
+    // old payment api
+    // app.post("/create-checkout-session", async (req, res) => {
+    //   const paymentInfo = req.body;
+    //   const amount = parseInt(paymentInfo.cost) * 100;
 
-      const session = await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            price_data: {
-              currency: "USD",
-              unit_amount: amount,
-              product_data: {
-                name: paymentInfo.parcelName,
-              },
-            },
-            quantity: 1,
+    //   const session = await stripe.checkout.sessions.create({
+    //     line_items: [
+    //       {
+    //         price_data: {
+    //           currency: "USD",
+    //           unit_amount: amount,
+    //           product_data: {
+    //             name: paymentInfo.parcelName,
+    //           },
+    //         },
+    //         quantity: 1,
+    //       },
+    //     ],
+    //     customer_email: paymentInfo.senderEmail,
+    //     mode: "payment",
+    //     metadata: {
+    //       parcelId: paymentInfo.parcelId,
+    //       parcelName: paymentInfo.parcelName,
+    //     },
+    //     success_url: `${process.env.SITE_DOMAIN}/dashboard/payment-success`,
+    //     cancel_url: `${process.env.SITE_DOMAIN}/dashboard/payment-cancelled`,
+    //   });
+
+    //   // console.log(session);
+    //   // res.send({ url: session.url });
+    // });
+
+    // payment success api
+    app.patch("/payment-success", async (req, res) => {
+      const sessionId = req.query.session_id;
+
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+      // console.log("session retrieve", sessionId);
+      console.log("session retrieve", session);
+      if (session.payment_status === "paid") {
+        const id = session.metadata.parcelId;
+        const query = { _id: new ObjectId(id) };
+        const update = {
+          $set: {
+            paymentStatus: "paid",
           },
-        ],
-        customer_email: paymentInfo.senderEmail,
-        mode: "payment",
-        metadata: {
-          parcelId: paymentInfo.parcelId,
-          parcelName: paymentInfo.parcelName,
-        },
-        success_url: `${process.env.SITE_DOMAIN}/dashboard/payment-success`,
-        cancel_url: `${process.env.SITE_DOMAIN}/dashboard/payment-cancelled`,
-      });
+        };
+        const result = await parcelCollection.updateOne(query, update);
 
-      console.log(session);
-      res.send({ url: session.url });
+        res.send(result);
+        console.log("payment success update", result);
+      }
+
+      res.send({ success: false });
     });
 
     // Send a ping to confirm a successful connection

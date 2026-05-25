@@ -23,16 +23,19 @@ const Payment = () => {
       parcelName: parcel.parcelName,
     };
 
-    const res = await axiosSecure.post("/create-checkout-session", paymentInfo);
+    const res = await axiosSecure.post(
+      "/payment-checkout-session",
+      paymentInfo,
+    );
 
-    // console.log("payment info", parcel);
+    console.log("payment info", parcel);
     console.log("payment response", res.data);
 
     window.location.href = res.data.url;
   };
 
   if (isLoading) {
-    return (
+    return ( 
       <div>
         <span className="loading loading-infinity loading-xl"></span>
       </div>

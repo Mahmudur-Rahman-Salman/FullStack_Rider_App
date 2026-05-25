@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "./../../hooks/useAuth";
@@ -16,6 +16,7 @@ const SendParcel = () => {
   const { user } = useAuth();
 
   const axiosSecure = useAxiosSecure();
+   const navigate = useNavigate();
 
   const serviceCenters = useLoaderData();
   const regionsDuplicate = serviceCenters.map((c) => c.region);
@@ -35,6 +36,7 @@ const SendParcel = () => {
 
   const handleSendParcel = (data) => {
     console.log(data);
+
     const isDocument = data.parcelType === "document";
     const isSameDistrict = data.senderDistrict === data.receiverDistrict;
     const parcelWeight = parseFloat(data.parcelWeight);
@@ -58,7 +60,7 @@ const SendParcel = () => {
 
     console.log("cost", cost);
     data.cost = cost;
-    
+
     Swal.fire({
       title: "Agree with the Cost?",
       text: `You will be charged ${cost} taka!`,
@@ -66,19 +68,23 @@ const SendParcel = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "I agree!",
+      confirmButtonText: "Confirm and Continue Payment!",
     }).then((result) => {
       if (result.isConfirmed) {
         // save the parcel info to the database
         axiosSecure.post("/parcels", data).then((res) => {
           console.log("after saving parcel", res.data);
+          if (res.data.insertedId) {
+            navigate("/dashboard/my-parcels");
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Parcel has created. Please Pay",
+              showConfirmButton: false,
+              timer: 2500,
+            });
+          }
         });
-
-        // Swal.fire({
-        //     title: "Deleted!",
-        //     text: "Your file has been deleted.",
-        //     icon: "success"
-        // });
       }
     });
   };
