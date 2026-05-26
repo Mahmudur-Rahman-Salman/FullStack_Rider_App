@@ -15,9 +15,10 @@ const port = process.env.PORT || 3000;
 const crypto = require("crypto");
 
 function generateTrackingId() {
-  const prefix = "PRCL";
-  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const random = crypto.randomBytes(3).toString("hex").toUpperCase();
+  const prefix = "PRCL"; // your brand prefix
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, ""); // YYYYMMDD
+  const random = crypto.randomBytes(3).toString("hex").toUpperCase(); // 6-char random hex
+
   return `${prefix}-${date}-${random}`;
 }
 
@@ -155,6 +156,7 @@ async function run() {
       const sessionId = req.query.session_id;
 
       const session = await stripe.checkout.sessions.retrieve(sessionId);
+      const trackingId = generateTrackingId();
 
       // console.log("session retrieve", sessionId);
       console.log("session retrieve", session);
@@ -164,11 +166,34 @@ async function run() {
         const update = {
           $set: {
             paymentStatus: "paid",
+            trackingId: trackingId,
           },
         };
         const result = await parcelCollection.updateOne(query, update);
 
-        res.send(result);
+        const payment = {
+          amount: session.amount_total / 100,
+          currency: session.currency,
+          customerEmail: session.customer_email,
+          parcelId: session.metadata.parcelId,
+          parcelName: session.metadata.parcelName,
+          transactionId: session.payment_intent,
+          paymentStatus: session.payment_status,
+          paidAt: new Date(),
+        };
+
+        if (session.payment_status === "paid") {
+          const resultPayment = await paymentCollection.insertOne(payment);
+          res.send({
+            sucess: true,
+            modifyParcel: result,
+            trackingId: trackingId,
+            transactionId: session.payment_intent,
+            paymentInfo: resultPayment,
+          });
+        }
+
+        // res.send(result);
         console.log("payment success update", result);
       }
 
